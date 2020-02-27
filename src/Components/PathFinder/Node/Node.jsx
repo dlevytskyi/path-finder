@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './Node.css';
+import './Node.scss';
 
 export default class Node extends Component {
   constructor(props) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Node from './Node/Node';
-import './PathFinder.css';
+import './PathFinder.scss';
 
 export default class PathFinder extends Component {
   constructor(props) {
