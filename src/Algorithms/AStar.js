@@ -1,50 +1,49 @@
 export function aStart(nodes, startNode, finishNode) {
-  let openSet = [startNode];
+  let openList = [];
+  let closedList = [];
   startNode.g = 0;
   startNode.h = manhattanDistance(startNode, finishNode);
   startNode.f = startNode.g + startNode.h;
-  let closestNode = null;
-  while (!!openSet.length) {
-
-    let currentNode = openSet.pop();
-
-    if (currentNode === finishNode) {
-      console.log('astart path was found', currentNode);
-      return pathTo(currentNode);
+  openList.push(startNode);
+  while (!!openList.length) {
+    let lowInd = 0;
+    for (let i = 0; i < openList.length; i++) {
+      if (openList[i].f < openList[lowInd].f) lowInd = i;
     }
-
+    let currentNode = openList[lowInd];
+    if (currentNode.row === finishNode.row && currentNode.col === finishNode.col) {
+      console.log(currentNode);
+      return 'PATH FOUND!';
+    }
+    openList.splice(lowInd, 1);
+    closedList.push(currentNode);
     let neighbors = getNeighbors(currentNode, nodes);
-
     for (let i = 0; i < neighbors.length; i++) {
       let neighbor = neighbors[i];
-      if (neighbor.isWall) continue;
-      neighbor.g = currentNode.g + 1;
-      // let gScore = currentNode.g + 1;
-      let beenVisited = neighbor.visited;
-      if (!beenVisited) {
-        neighbor.visited = true;
-        neighbor.parent = currentNode;
-        neighbor.g = currentNode.g + 1;
-        neighbor.h = manhattanDistance(neighbor, finishNode);
-        neighbor.f = neighbor.g + neighbor.h;
+      if (nodeExistInList(closedList, neighbor) || neighbor.isWall) {
+        continue;
+      }
 
-        closestNode = (!currentNode) ? neighbor : (neighbor.f < closestNode.f) ? neighbor : closestNode;
-        // if (neighbor.h < closestNode.h || (neighbor.h === closestNode.h && neighbor.g < closestNode.g)) {
-        //   closestNode = neighbor;
-        // }
-        // if (!beenVisited) {
-        //   openSet.push(neighbor);
-        // } else {
-        //   ////
-        // }
+      let gScore = currentNode.g + 1;
+      let gScoreIsBest = false;
+
+      if (!nodeExistInList(openList, neighbor)) {
+        gScoreIsBest = true;
+        neighbor.h = manhattanDistance(neighbor, finishNode);
+        openList.push(neighbor)
+      } else if (gScore < neighbor.g) {
+        gScoreIsBest = true;
+      }
+
+      if (gScoreIsBest) {
+        neighbor.parent = currentNode;
+        neighbor.g = gScore;
+        neighbor.f = neighbor.g + neighbor.h;
       }
     }
-
-
-
   }
 
-  // return 'Path was no found';
+  return [];
 }
 
 const getNeighbors = (currentNode, nodes) => {
@@ -73,4 +72,11 @@ const pathTo = (node) => {
   //   console.log('pathTo currentnode', currentNode);
   // }
   // return path;
-} 
+}
+
+const nodeExistInList = (list, nodeToFound) => {
+  for (let node of list) {
+    if (node.row === nodeToFound.row && node.col === nodeToFound.col) return true;
+  }
+  return null;
+}
