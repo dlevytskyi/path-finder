@@ -7,9 +7,13 @@
 }
 
 .node-start {
-  background-color: blue;
+  background-color: blue !important;
 }
 
 .node-finish {
-  background-color: green;
+  background-color: green !important;
+}
+
+.short-path {
+  background-color: violet;
 }

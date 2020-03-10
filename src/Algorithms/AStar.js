@@ -12,8 +12,7 @@ export function aStart(nodes, startNode, finishNode) {
     }
     let currentNode = openList[lowInd];
     if (currentNode.row === finishNode.row && currentNode.col === finishNode.col) {
-      console.log(currentNode);
-      return 'PATH FOUND!';
+      return pathTo(currentNode);
     }
     openList.splice(lowInd, 1);
     closedList.push(currentNode);
@@ -61,17 +60,12 @@ const getNeighbors = (currentNode, nodes) => {
 const manhattanDistance = (nodeA, nodeB) => Math.abs(nodeB.col - nodeA.col) + Math.abs(nodeB.row - nodeA.row);
 
 const pathTo = (node) => {
-  let currentNode = node;
   let path = [];
-  console.log(currentNode)
-  return false;
-  // while (currentNode.parent) {
-
-  //   path.unshift(currentNode);
-  //   currentNode = node.parent;
-  //   console.log('pathTo currentnode', currentNode);
-  // }
-  // return path;
+  while (node.parent) {
+    path.unshift(node);
+    node = node.parent;
+  }
+  return path;
 }
 
 const nodeExistInList = (list, nodeToFound) => {

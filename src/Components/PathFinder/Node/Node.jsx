@@ -15,8 +15,12 @@ export default class Node extends Component {
   }
 
   render() {
-    const { isStart, isFinish } = this.props;
-    const className = isStart ? 'node-start' : isFinish ? 'node-finish' : '';
+    const { isStart, isFinish, isShortPathEl } = this.props;
+    if (isShortPathEl) console.log('TRUE!');
+
+    const shortPathElClass = isShortPathEl ? 'short-path' : ''
+    let className = isStart ? 'node-start' : isFinish ? 'node-finish' : '';
+    className = `${shortPathElClass} ${className}`;
     return (
       <div className={`node ${className}`}></div>
     )
