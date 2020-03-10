@@ -15,14 +15,20 @@ export default class Node extends Component {
   }
 
   render() {
-    const { isStart, isFinish, isShortPathEl } = this.props;
-    if (isShortPathEl) console.log('TRUE!');
+    const { isStart, isFinish, isShortPathEl, isWall, onMouseDown, onMouseEnter, onMouseUp, row, col } = this.props;
+    if (isShortPathEl) console.log('TRUE! ', row, col);
 
     const shortPathElClass = isShortPathEl ? 'short-path' : ''
+    const wallClass = isWall ? 'wall' : '';
     let className = isStart ? 'node-start' : isFinish ? 'node-finish' : '';
-    className = `${shortPathElClass} ${className}`;
+    className = `${shortPathElClass} ${className} ${wallClass}`;
     return (
-      <div className={`node ${className}`}></div>
+      <div
+        className={`node ${className}`}
+        onMouseDown={() => { onMouseDown(row, col) }}
+        onMouseEnter={() => { onMouseEnter(row, col) }}
+        onMouseUp={() => { onMouseUp() }}>
+      </div>
     )
   }
 }

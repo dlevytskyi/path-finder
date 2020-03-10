@@ -1,4 +1,4 @@
-export function aStart(nodes, startNode, finishNode) {
+export function aStart(grid, startNode, finishNode) {
   let openList = [];
   let closedList = [];
   startNode.g = 0;
@@ -16,7 +16,7 @@ export function aStart(nodes, startNode, finishNode) {
     }
     openList.splice(lowInd, 1);
     closedList.push(currentNode);
-    let neighbors = getNeighbors(currentNode, nodes);
+    let neighbors = getNeighbors(currentNode, grid);
     for (let i = 0; i < neighbors.length; i++) {
       let neighbor = neighbors[i];
       if (nodeExistInList(closedList, neighbor) || neighbor.isWall) {
@@ -45,9 +45,9 @@ export function aStart(nodes, startNode, finishNode) {
   return [];
 }
 
-const getNeighbors = (currentNode, nodes) => {
+const getNeighbors = (currentNode, grid) => {
   let neighbors = [];
-  nodes.forEach(row => {
+  grid.forEach(row => {
     row.forEach(node => {
       if (node.row === currentNode.row && node.col === currentNode.col - 1) neighbors.push(node);
       if (node.row === currentNode.row && node.col === currentNode.col + 1) neighbors.push(node);
