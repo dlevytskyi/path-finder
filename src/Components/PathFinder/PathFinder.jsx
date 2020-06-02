@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import Node from './Node/Node';
+import Node from '../Node/Node';
 import './PathFinder.scss';
 import '../../Algorithms/AStar';
-import { aStart } from '../../Algorithms/AStar';
+import aStart from '../../Algorithms/AStar';
+import Header from '../Header/Header';
 
 const DEFAULT_START_NODE = {
   row: 10,
@@ -34,7 +35,7 @@ export default class PathFinder extends Component {
     this.setState({ grid, startNode, finishNode })
   }
 
-  animateShortestPath(path) {
+  animateShortestPath = (path) => {
     for (let i = 0; i < path.length; i++) {
       setTimeout(() => {
         const node = path[i];
@@ -49,15 +50,17 @@ export default class PathFinder extends Component {
     }
   }
 
-  findPath() {
+  findPath = () => {
     const { grid, startNode, finishNode } = this.state;
+    let newGrid = this.clearShortPath(grid.slice());
+    this.setState({ grid: newGrid });
     let path = aStart(grid, startNode, finishNode);
     if (path && path.length > 0) {
       this.animateShortestPath(path);
     }
   }
 
-  createGrid(rows, cols, startNode, finishNode) {
+  createGrid = (rows, cols, startNode, finishNode) => {
     const grid = [];
     for (let row = 0; row < rows; row++) {
       const currentRow = [];
@@ -78,31 +81,39 @@ export default class PathFinder extends Component {
     return grid;
   }
 
-  clearBoard() {
+  clearShortPath = (grid) => {
+    for (let row = 0; row < grid.length; row++) {
+      for (let col = 0; col < grid[row].length; col++) {
+        let node = grid[row][col];
+        node.isShortPathEl = false;
+      }
+    }
+    return grid;
+  }
+
+  clearBoard = () => {
     const { startNode, finishNode } = this.state;
     const newGrid = this.createGrid(GRID_SIZE.rows, GRID_SIZE.cols, startNode, finishNode)
     this.setState({ grid: newGrid });
   }
 
-  handleMouseDown(row, col) {
+  handleMouseDown = (row, col) => {
     const newGrid = this.createGridWithWall(this.state.grid, row, col);
-    this.setState({ grid: newGrid, mousePressed: true });
+    this.setState({ grid: newGrid, mousPressed: true });
   }
 
-  handleMouseEnter(row, col) {
-    console.log('mouseEnter', this.state.mousePressed)
+  handleMouseEnter = (row, col) => {
     if (!this.state.mousePressed) return false;
     const newGrid = this.createGridWithWall(this.state.grid, row, col);
     this.setState({ grid: newGrid });
   }
 
-  handleMouseUp() {
+  handleMouseUp = () => {
     this.setState({ mousePressed: false })
   }
 
-  createGridWithWall(grid, wallRow, wallCol) {
+  createGridWithWall = (grid, wallRow, wallCol) => {
     const newGrid = grid.slice();
-    console.log(wallRow, wallCol);
     const node = newGrid[wallRow][wallCol];
     const wallNode = {
       ...node,
@@ -114,34 +125,38 @@ export default class PathFinder extends Component {
 
   render() {
     const { grid } = this.state;
-
     return (
-      <div className="grid">
-        PathFinder
+      <div>
+        <Header
+          findPath={this.findPath}>
+        </Header>
+        <div className="grid">
+          PathFinder
         <button onClick={() => { this.findPath() }}>Find Path</button>
-        <button onClick={() => { this.clearBoard() }}>Clear board</button>
-        {grid.map((row, rowIdx) => {
-          return <div key={rowIdx}>
-            {row.map((node, nodeIdx) => {
-              const { isStart, isFinish, col, row, isShortPathEl, isWall, mouseIsPressed } = node;
-              return (
-                <Node
-                  key={nodeIdx}
-                  isStart={isStart}
-                  isFinish={isFinish}
-                  col={col}
-                  row={row}
-                  isShortPathEl={isShortPathEl}
-                  isWall={isWall}
-                  mouseIsPressed={mouseIsPressed}
-                  onMouseDown={() => { this.handleMouseDown(row, col) }}
-                  onMouseEnter={() => { this.handleMouseEnter(row, col) }}
-                  onMouseUp={() => { this.handleMouseUp() }}>
-                </Node>
-              );
-            })}
-          </div>
-        })}
+          <button onClick={() => { this.clearBoard() }}>Clear board</button>
+          {grid.map((row, rowIdx) => {
+            return <div key={rowIdx}>
+              {row.map((node, nodeIdx) => {
+                const { isStart, isFinish, col, row, isShortPathEl, isWall, mouseIsPressed } = node;
+                return (
+                  <Node
+                    key={nodeIdx}
+                    isStart={isStart}
+                    isFinish={isFinish}
+                    col={col}
+                    row={row}
+                    isShortPathEl={isShortPathEl}
+                    isWall={isWall}
+                    mouseIsPressed={mouseIsPressed}
+                    onMouseDown={() => { this.handleMouseDown(row, col) }}
+                    onMouseEnter={() => { this.handleMouseEnter(row, col) }}
+                    onMouseUp={() => { this.handleMouseUp() }}>
+                  </Node>
+                );
+              })}
+            </div>
+          })}
+        </div>
       </div>
     )
   }

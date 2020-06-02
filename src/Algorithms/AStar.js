@@ -1,4 +1,4 @@
-export function aStart(grid, startNode, finishNode) {
+const aStart = (grid, startNode, finishNode) => {
   let openList = [];
   let closedList = [];
   startNode.g = 0;
@@ -74,3 +74,5 @@ const nodeExistInList = (list, nodeToFound) => {
   }
   return null;
 }
+
+export default aStart;
